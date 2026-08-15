@@ -13,3 +13,4 @@ class Person:
             self.affected = affected
             self.mother_id = mother_id
             self.father_id = father_id
+     
