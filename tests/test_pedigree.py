@@ -62,8 +62,7 @@ def unrelated():
     per2 = Person("lolu","p2","M",True,"p4","p3")
     yield ped, per1,per2
     ped.people.clear()
-
-
+    
 def test_pedigree(p,per):
     assert p.get_person("p1") == per
     assert p.get_person("p99") is None
@@ -176,3 +175,62 @@ def test_self_father():
 def test_empty_id():
     with pytest.raises(ValueError, match="person ID can not be empty"):
         Person("a","","F",False)
+        
+def test_grandparent_via_father():
+    ped = Pedigree()
+    gp = Person("A", "p1","M",False)
+    f = Person("B","p2","M",False,None,"p1")
+    child = Person("C","p3","M",False,None,"p2")
+    ped.add_person(gp)
+    ped.add_person(f)
+    ped.add_person(child)
+    
+    assert ped.get_relationship(gp,child) == "grandparent"
+
+def test_gp_via_mother():
+    ped =  Pedigree()
+    gp = Person("A", "p1","M",False)
+    m = Person("B","p2","F",False,None,"p1")
+    child = Person("c","p3","M",False,"p2")
+    ped.add_person(gp)
+    ped.add_person(m)
+    ped.add_person(child)
+    
+    assert ped.get_relationship(gp,child) == "grandparent"
+    
+def test_grandchild_via_father():
+    pedigree = Pedigree()
+
+    grandparent = Person("A", "1", "M", False)
+    parent = Person("B", "2", "M", False, father_id="1")
+    child = Person("C", "3", "F", False, father_id="2")
+
+    pedigree.add_person(grandparent)
+    pedigree.add_person(parent)
+    pedigree.add_person(child)
+
+    assert pedigree.get_relationship(child, grandparent) == "grandchild"
+    
+def test_grandchild_via_mother():
+    pedigree = Pedigree()
+
+    grandparent = Person("A", "1", "F", False)
+    parent = Person("B", "2", "F", False, mother_id="1")
+    child = Person("C", "3", "M", False, mother_id="2")
+
+    pedigree.add_person(grandparent)
+    pedigree.add_person(parent)
+    pedigree.add_person(child)
+
+    assert pedigree.get_relationship(child, grandparent) == "grandchild"
+    
+def test_grandparent_missing_intermediate_parent():
+    pedigree = Pedigree()
+
+    grandparent = Person("A", "1", "M", False)
+    child = Person("C", "3", "F", False, father_id="2")
+
+    pedigree.add_person(grandparent)
+    pedigree.add_person(child)
+
+    assert pedigree.get_relationship(grandparent, child) == "unrelated"

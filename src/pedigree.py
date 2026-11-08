@@ -51,8 +51,33 @@ class Pedigree:
             )
         ):
             return "siblings"
+        father = self.get_person(person2.father_id)
+        if father is not None:
+            if(father.mother_id == person1.person_id or 
+               father.father_id == person1.person_id):
+                return "grandparent"
             
+        mother = self.get_person(person2.mother_id)
+        if mother is not None:
+            if(mother.father_id == person1.person_id or
+               mother.mother_id == person1.person_id):
+                return "grandparent"
+        child_father = self.get_person(person1.father_id)
+        child_mother = self.get_person(person1.mother_id)
+        if child_father is not None:
+            if(child_father.father_id == person2.person_id or
+               child_father.mother_id == person2.person_id):
+                return "grandchild"
+        if child_mother is not None:    
+            if(child_mother.father_id == person2.person_id or
+               child_mother.mother_id == person2.person_id):
+                return "grandchild"
+            
+            
+           
+          
         return "unrelated"
+    
     
     def validate_pedigree(self):
         for person in self.people.values():
