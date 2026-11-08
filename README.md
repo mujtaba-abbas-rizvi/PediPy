@@ -1,5 +1,4 @@
 # PediPy
-
 **PediPy** is an educational Python-based pedigree analysis tool designed to represent family relationships and explore genetic pedigrees.
 
 This project is being developed as a hands-on learning exercise in Python, object-oriented programming, software design, and automated testing.
@@ -63,3 +62,4 @@ Planned development includes:
 ## Project Scope
 
 PediPy is an educational project. It is not intended for clinical diagnosis or medical decision-making.
+=======
